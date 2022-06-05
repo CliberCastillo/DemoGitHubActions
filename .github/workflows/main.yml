@@ -1,0 +1,34 @@
+name: Demo Build
+on:
+  push:
+    branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET 
+        uses: actions/setup-dotnet@v2 
+        with: 
+          dotnet-version: 6.0.x 
+
+      - name: Restore dependencies 
+        run: dotnet restore 
+
+      - name: Build 
+        run: dotnet build -c Release --no-restore 
+
+      - name: Publish 
+        run: dotnet publish -c Release -o app/build 
+
+      - name: Upload a Build Artifact 
+        uses: actions/upload-artifact@v3.1.0 
+        with: 
+         name: demo-app-build 
+         path: app/build 
